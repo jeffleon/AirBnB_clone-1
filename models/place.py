@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, String, Float, Integer
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
-import os
+
 
 place_amenity = Table("place_amenity", Base.metadata,
                       Column("place_id", String(60), ForeignKey("places.id"),
@@ -16,28 +16,40 @@ place_amenity = Table("place_amenity", Base.metadata,
                              ("amenities.id"), primary_key=True,
                              nullable=False))
 
-storage_type = os.getenv('HBNB_TYPE_STORAGE')
 
 class Place(BaseModel, Base):
     """ A place to stay """
-    __tablename__ = "places"
-    city_id = Column(String(60), ForeignKey("cities.id"))
-    user_id = Column(String(60), ForeignKey("users.id"))
-    name = Column(String(128))
-    description = Column(String(1024))
-    number_rooms = Column(Integer, default=0)
-    number_bathrooms = Column(Integer, default=0)
-    max_guest = Column(Integer, default=0)
-    price_by_night = Column(Integer, default=0)
-    latitude = Column(Float, nullable=True)
-    longitude = Column(Float, nullable=True)
-    amenity_ids = []
-    if storage_type == "db":
+    if models.storage_type == "db":
+        __tablename__ = "places"
+        city_id = Column(String(60), ForeignKey("cities.id"))
+        user_id = Column(String(60), ForeignKey("users.id"))
+        name = Column(String(128))
+        description = Column(String(1024))
+        number_rooms = Column(Integer, default=0)
+        number_bathrooms = Column(Integer, default=0)
+        max_guest = Column(Integer, default=0)
+        price_by_night = Column(Integer, default=0)
+        latitude = Column(Float, nullable=True)
+        longitude = Column(Float, nullable=True)
+        amenity_ids = []
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
+                                 backref="place_amenities",
                                  viewonly=False)
+    else:
+        city_id = ""
+        user_id = ""
+        name = ""
+        description = ""
+        number_rooms = 0
+        number_bathrooms = 0
+        max_guest = 0
+        price_by_night = 0
+        latitude = 0.0
+        longitude = 0.0
+        amenity_ids = []
 
-    if storage_type != "db":
+    if models.storage_type != "db":
         @property
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
