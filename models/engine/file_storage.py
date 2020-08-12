@@ -20,7 +20,9 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns the dictionary __objects"""
-        if cls is not None:
+        if not cls:
+            return self.__objects
+        if cls:
             new_dict = {}
             for key, value in FileStorage.__objects.items():
                 if cls.__name__ in key:
@@ -53,10 +55,10 @@ class FileStorage:
             pass
     def delete(self, obj=None):
         """Delete  obj from __objects if it’s inside  __"""
+        if obj is None:
+            return
         if obj:
             pattern = "{}.{}".format(type(obj).__name__, obj.id)
             if pattern in self.__objects:
                 del self.__objects[key]
                 self.save()
-        else:
-            return 
