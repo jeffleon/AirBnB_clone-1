@@ -81,7 +81,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -117,7 +117,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = line.split(" ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
@@ -186,7 +186,7 @@ class HBNBCommand(cmd.Cmd):
             if not line:
                 raise SyntaxError()
             my_list = split(line, " ")
-            if my_list[0] not in self.all_classes:
+            if my_list[0] not in self.classes:
                 raise NameError()
             if len(my_list) < 2:
                 raise IndexError()
