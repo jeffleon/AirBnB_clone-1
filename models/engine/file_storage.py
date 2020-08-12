@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+B#!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
 import json
 from models.amenity import Amenity
@@ -56,5 +56,3 @@ class FileStorage:
         if obj:
             self.__session.delete(obj)
             self.save()
-        else:
-            return
