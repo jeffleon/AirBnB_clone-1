@@ -21,7 +21,6 @@ class HBNBCommand(cmd.Cmd):
                "City": City, "Amenity": Amenity, "Place": Place,
                "Review": Review}
 
-
     def precmd(self, line):
         ''' Non-interactive mode & process line before execute commands '''
         if '.' in line and '(' in line and ')' in line:
@@ -141,7 +140,6 @@ class HBNBCommand(cmd.Cmd):
             except KeyError:
                 print("** no instance found **")
 
-
     def help_destroy(self):
         """ Help information for the destroy command """
         print("Destroys an individual instance of a class")
@@ -169,7 +167,6 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the all command """
         print("Shows all objects, or all of a class")
         print("[Usage]: all <className>\n")
-
 
     def do_update(self, line):
         """Updates an instanceby adding or updating attribute
