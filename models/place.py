@@ -19,35 +19,23 @@ place_amenity = Table("place_amenity", Base.metadata,
 
 class Place(BaseModel, Base):
     """ A place to stay """
-    if models.storage_type == "db":
-        __tablename__ = "places"
-        city_id = Column(String(60), ForeignKey("cities.id"))
-        user_id = Column(String(60), ForeignKey("users.id"))
-        name = Column(String(128))
-        description = Column(String(1024))
-        number_rooms = Column(Integer, default=0)
-        number_bathrooms = Column(Integer, default=0)
-        max_guest = Column(Integer, default=0)
-        price_by_night = Column(Integer, default=0)
-        latitude = Column(Float, nullable=True)
-        longitude = Column(Float, nullable=True)
-        amenity_ids = []
+    __tablename__ = "places"
+    city_id = Column(String(60), ForeignKey("cities.id"))
+    user_id = Column(String(60), ForeignKey("users.id"))
+    name = Column(String(128))
+    description = Column(String(1024))
+    number_rooms = Column(Integer, default=0)
+    number_bathrooms = Column(Integer, default=0)
+    max_guest = Column(Integer, default=0)
+    price_by_night = Column(Integer, default=0)
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    amenity_ids = []
+    if storage_type == "db":
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
                                  backref="place_amenities",
                                  viewonly=False)
-    else:
-        city_id = ""
-        user_id = ""
-        name = ""
-        description = ""
-        number_rooms = 0
-        number_bathrooms = 0
-        max_guest = 0
-        price_by_night = 0
-        latitude = 0.0
-        longitude = 0.0
-        amenity_ids = []
 
     if models.storage_type != "db":
         @property
