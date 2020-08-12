@@ -22,11 +22,11 @@ class FileStorage:
         """Returns the dictionary __objects"""
         if cls is not None:
             new_dict = {}
-            for key, value in self.__objects.items():
-                if cls == value.__class__ or cls == value.__class__.__name__:
+            for key, value in FileStorage.__objects.items():
+                if cls.__name__ in key:
                     new_dict[key] = value
             return new_dict
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
@@ -53,9 +53,10 @@ class FileStorage:
             pass
     def delete(self, obj=None):
         """Delete  obj from __objects if it’s inside  __"""
-        if not obj:
-            return
-        pattern = "{}.{}".format(type(obj).__name__, obj.id)
-        if pattern in self.__objects:
-            del self.__objects[key]
-            self.save()
+        if obj:
+            pattern = "{}.{}".format(type(obj).__name__, obj.id)
+            if pattern in self.__objects:
+                del self.__objects[key]
+                self.save()
+        else:
+            return 
