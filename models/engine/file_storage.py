@@ -51,3 +51,10 @@ class FileStorage:
                                       (**file_object[key])
         except:
             pass
+    def delete(self, obj=None):
+        """Delete  obj from __objects if it’s inside"""
+        if obj:
+            self.__session.delete(obj)
+            self.save()
+        else:
+            return
