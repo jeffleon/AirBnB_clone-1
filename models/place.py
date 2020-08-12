@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, String, Float, Integer
 from sqlalchemy import *
 from sqlalchemy.orm import relationship
-
+import os
 
 place_amenity = Table("place_amenity", Base.metadata,
                       Column("place_id", String(60), ForeignKey("places.id"),
@@ -15,6 +15,8 @@ place_amenity = Table("place_amenity", Base.metadata,
                       Column("amenity_id", String(60), ForeignKey
                              ("amenities.id"), primary_key=True,
                              nullable=False))
+
+storage_type = os.getenv("HBNB_TYPE_STORAGE")
 
 
 class Place(BaseModel, Base):
@@ -37,7 +39,7 @@ class Place(BaseModel, Base):
                                  backref="place_amenities",
                                  viewonly=False)
 
-    if models.storage_type != "db":
+    if storage_type != "db":
         @property
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
