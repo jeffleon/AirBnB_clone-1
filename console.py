@@ -5,7 +5,7 @@ import sys
 import shlex
 import models
 from models.base_model import BaseModel
-from models import storage
+from models.__init__ import storage
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -42,41 +42,32 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         return False
 
-    def parserKeyValues(self, args):
-        """Creates a dictionary from list of strings"""
-        dictionaries = {}
-        for arg in args:
-            if "=" in arg:
-                parser = arg.split('=', 1)
-                key = parser[0]
-                value = parser[1]
-                if value[0] == value[-1] == '"':
-                    value = shlex.split(value)[0].replace('_', ' ')
-                else:
-                    try:
-                        value = int(value)
-                    except:
-                        try:
-                            value = float(value)
-                        except:
-                            continue
-                dictionaries[key] = value
-            return dictionaries
-
-    def do_create(self, arg):
-        """Creates a new instance of a class"""
-        args = arg.split()
-        if len(args) == 0:
+    def do_create(self, line):
+        """Creates a new instance of BaseModel, saves it
+        Exceptions:
+            SyntaxError: when there is no args given
+            NameError: when there is no object taht has the name
+        """
+        try:
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            obj = eval("{}()".format(my_list[0]))
+            for parameters in my_list[1:]:
+                # Any Given parameters will be split into tokens
+                GivenParam = parameters.split('=')
+                key = GivenParam[0]
+                value = GivenParam[1]
+                # All underscores "_" must be replaced by spaces
+                CharacterReplaced = value.replace("_", " ").replace("\"", "")
+                # Any double quote inside the value must be escaped with a '\'
+                setattr(obj, key, CharacterReplaced)
+            obj.save()
+            print("{}".format(obj.id))
+        except SyntaxError:
             print("** class name missing **")
-            return False
-        if args[0] in classes:
-            new_dict = self.parserKeyValues(args[1:])
-            instance = classes[args[0]](**new_dict)
-        else:
+        except NameError:
             print("** class doesn't exist **")
-            return False
-        print(instance.id)
-        instance.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -86,26 +77,28 @@ class HBNBCommand(cmd.Cmd):
     def do_show(self, argum):
         """Prints the string representation of an instance based on the class
 name and id."""
-        models.storage.reload()
-        if len(argum) == 0:
-            print("** class name missing **")
-            return
-        argum_list = argum.split()
         try:
-            instance = eval(argum_list[0])
-        except Exception:
-            print("** class doesn't exist **")
-            return
-        if len(argum_list) == 1:
-            print("** instance id missing **")
-            return
-        elif len(argum_list) > 1:
-            key = argum_list[0] + "." + argum_list[1]
-            if key in models.storage.all():
-                print(models.storage.all()[key])
+            if not line:
+                raise SyntaxError()
+            my_list = line.split(" ")
+            if my_list[0] not in self.all_classes:
+                raise NameError()
+            if len(my_list) < 2:
+                raise IndexError()
+            objects = storage.all()
+            key = my_list[0] + '.' + my_list[1]
+            if key in objects:
+                print(objects[key])
             else:
-                print("** no instance found **")
-                return
+                raise KeyError()
+        except SyntaxError:
+            print("** class name missing **")
+        except NameError:
+            print("** class doesn't exist **")
+        except IndexError:
+            print("** instance id missing **")
+        except KeyError:
+            print("** no instance found **")
 
     def help_show(self):
         """ Help information for the show command """
@@ -140,22 +133,26 @@ name and id."""
         print("Destroys an individual instance of a class")
         print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_all(self, argum):
+    def do_all(self, line):
         """ Display all instances based on class name """
-        args = shlex.split(argum)
-        obj_list = []
-        if len(args) == 0:
-            obj_dict = models.storage.all()
-        elif args[0] in classes:
-            obj_dict = models.storage.all(classes[args[0]])
-        else:
+        objects = storage.all()
+        my_list = []
+        if not line:
+            for key in objects:
+                my_list.append(objects[key])
+            print(my_list)
+            return
+        try:
+            args = line.split(" ")
+            if args[0] not in classes:
+                raise NameError()
+            for key in objects:
+                name = key.split('.')
+                if name[0] == args[0]:
+                    my_list.append(objects[key])
+            print(my_list)
+        except NameError:
             print("** class doesn't exist **")
-            return False
-        for key in obj_dict:
-            obj_list.append(str(obj_dict[key]))
-        print("[", end="")
-        print(", ".join(obj_list), end="")
-        print("]")
 
     def help_all(self):
         """ Help information for the all command """
@@ -176,41 +173,40 @@ name and id."""
 
     def do_update(self, argum):
         """ update an instance based on its UUID """
-        args = shlex.split(arg)
-        integers = ["number_rooms", "number_bathrooms", "max_guest",
-                    "price_by_night"]
-        floats = ["latitude", "longitude"]
-        if len(args) == 0:
+        try:
+            if not line:
+                raise SyntaxError()
+            my_list = split(line, " ")
+            if my_list[0] not in self.all_classes:
+                raise NameError()
+            if len(my_list) < 2:
+                raise IndexError()
+            objects = storage.all()
+            key = my_list[0] + '.' + my_list[1]
+            if key not in objects:
+                raise KeyError()
+            if len(my_list) < 3:
+                raise AttributeError()
+            if len(my_list) < 4:
+                raise ValueError()
+            v = objects[key]
+            try:
+                v.__dict__[my_list[2]] = eval(my_list[3])
+            except Exception:
+                v.__dict__[my_list[2]] = my_list[3]
+                v.save()
+        except SyntaxError:
             print("** class name missing **")
-        elif args[0] in classes:
-            if len(args) > 1:
-                k = args[0] + "." + args[1]
-                if k in models.storage.all():
-                    if len(args) > 2:
-                        if len(args) > 3:
-                            if args[0] == "Place":
-                                if args[2] in integers:
-                                    try:
-                                        args[3] = int(args[3])
-                                    except:
-                                        args[3] = 0
-                                elif args[2] in floats:
-                                    try:
-                                        args[3] = float(args[3])
-                                    except:
-                                        args[3] = 0.0
-                            setattr(models.storage.all()[k], args[2], args[3])
-                            models.storage.all()[k].save()
-                        else:
-                            print("** value missing **")
-                    else:
-                        print("** attribute name missing **")
-                else:
-                    print("** no instance found **")
-            else:
-                print("** instance id missing **")
-        else:
+        except NameError:
             print("** class doesn't exist **")
+        except IndexError:
+            print("** instance id missing **")
+        except KeyError:
+            print("** no instance found **")
+        except AttributeError:
+            print("** attribute name missing **")
+        except ValueError:
+            print("** value missing **")
 
     def help_update(self):
         """ Help information for the update class """
