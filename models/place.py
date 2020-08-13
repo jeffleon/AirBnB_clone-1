@@ -37,13 +37,10 @@ class Place(BaseModel, Base):
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
                                  viewonly=False)
-        '''
         reviews = relationship("Review",
                                cascade="all,delete",
                                backref=backref("place", cascade="all,delete"))
-        '''
     if storage_type != "db":
-        '''
         @property
         def reviews(self):
             """Return list of review"""
@@ -53,7 +50,6 @@ class Place(BaseModel, Base):
                 if value.place_id == self.id:
                     reviews.append(value)
             return reviews
-        '''
         @property
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
