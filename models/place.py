@@ -22,14 +22,14 @@ storage_type = os.getenv("HBNB_TYPE_STORAGE")
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = "places"
-    city_id = Column(String(60), ForeignKey("cities.id"))
-    user_id = Column(String(60), ForeignKey("users.id"))
-    name = Column(String(128))
-    description = Column(String(1024))
-    number_rooms = Column(Integer, default=0)
-    number_bathrooms = Column(Integer, default=0)
-    max_guest = Column(Integer, default=0)
-    price_by_night = Column(Integer, default=0)
+    city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
+    user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
+    name = Column(String(128), nullable=False)
+    description = Column(String(1024), nullable=False)
+    number_rooms = Column(Integer, default=0, nullable=False)
+    number_bathrooms = Column(Integer, default=0, nullable=False)
+    max_guest = Column(Integer, default=0, nullable=False)
+    price_by_night = Column(Integer, default=0, nullable=False)
     latitude = Column(Float, nullable=True)
     longitude = Column(Float, nullable=True)
     amenity_ids = []
@@ -37,8 +37,20 @@ class Place(BaseModel, Base):
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
                                  viewonly=False)
-
+        reviews = relationship("Review",
+                               cascade="all, delete-orphan",
+                               backref=backref("place"))
     if storage_type != "db":
+        @property
+        def reviews(self):
+            """Return list of review"""
+            from models import storage
+            reviews = list()
+            for key, value in storage.all().items():
+                if value.place_id == self.id:
+                    reviews.append(value)
+            return reviews
+                    
         @property
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
