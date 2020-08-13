@@ -37,8 +37,8 @@ class Place(BaseModel, Base):
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
                                  viewonly=False)
-        reviews = relationship("Review", cascade="all, delete",
-                               backref="place")
+        reviews = relationship("Review", backref="place",
+                               cascade="all, delete")
     if storage_type != "db":
         @property
         def reviews(self):
