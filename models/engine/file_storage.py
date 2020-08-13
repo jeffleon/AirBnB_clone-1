@@ -24,11 +24,10 @@ class FileStorage:
             return self.__objects
         if cls:
             new_dict = {}
-            for key, value in FileStorage.__objects.items():
+            for key, value in self.__objects.items():
                 if cls.__name__ in key:
                     new_dict[key] = value
-            return new_dict
-        return FileStorage.__objects
+        return new_dict
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
@@ -58,7 +57,7 @@ class FileStorage:
         if obj is None:
             return
         if obj:
-            pattern = "{}.{}".format(type(obj).__name__, obj.id)
-            if pattern in self.__objects:
+            pattern = "{}.{}".format(obj.__class__.__name__, obj.id)
+            if pattern in self.__objects.keys():
                 del self.__objects[key]
                 self.save()
