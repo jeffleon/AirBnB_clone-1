@@ -14,4 +14,5 @@ class User(BaseModel):
     password = ''
     first_name = ''
     last_name = ''
-    places = relationship("Place", backref="user")
+    places = relationship("Place", backref="user",
+                          cascade="all, delete")
