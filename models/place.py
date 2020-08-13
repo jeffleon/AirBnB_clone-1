@@ -36,7 +36,6 @@ class Place(BaseModel, Base):
     if storage_type == "db":
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
-                                 backref="place_amenities",
                                  viewonly=False)
 
     if storage_type != "db":
