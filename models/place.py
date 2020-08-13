@@ -6,7 +6,7 @@ import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey, String, Float, Integer
 from sqlalchemy import *
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 import os
 
 place_amenity = Table("place_amenity", Base.metadata,
@@ -37,6 +37,11 @@ class Place(BaseModel, Base):
         amenities = relationship("Amenity",
                                  secondary="place_amenity",
                                  viewonly=False)
+        '''
+        reviews = relationship("Review",
+                               cascade="all,delete",
+                               backref=backref("place", cascade="all,delete"))
+        '''
     if storage_type != "db":
         '''
         @property
@@ -48,7 +53,7 @@ class Place(BaseModel, Base):
                 if value.place_id == self.id:
                     reviews.append(value)
             return reviews
-        '''         
+        '''
         @property
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
