@@ -53,7 +53,13 @@ class Place(BaseModel, Base):
         def amenities(self):
             """ Return a list of amenity instances based on the attribute
 amenity_ids that contains all Amenity.id linked to the Place"""
-            return self.amenity_ids
+            all_amenities = models.storage.all(Amenity)
+            filter_amenities = []
+            for amenity in all_amenities.values():
+                for place_amenity in self.amenity_ids:
+                    if amenity.id == place_amenity:
+                        filter_amenities.append(amenity)
+            return filter_amenities
 
         @amenities.setter
         def amenities(self, obj):
