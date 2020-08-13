@@ -1,8 +1,11 @@
-#!/usr/bin/python3
-"""Console for Airbnb"""
+#!/usr/bin/env python3
+'''
+Console for Airbnb project
+'''
 import cmd
+import sys
+from datetime import datetime, date
 from models import storage
-from datetime import datetime
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -10,16 +13,14 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-from shlex import split
 
 
 class HBNBCommand(cmd.Cmd):
-    """this class is entry point of the command interpreter
-    """
+    ''' Class for Airbnb CLI '''
     prompt = "(hbnb) "
-    classes = {"BaseModel": BaseModel, "User": User, "State": State,
-               "City": City, "Amenity": Amenity, "Place": Place,
-               "Review": Review}
+
+    classes = ["BaseModel", "User", "State", "City", "Amenity", "Place",
+               "Review"]
 
     def precmd(self, line):
         ''' Non-interactive mode & process line before execute commands '''
@@ -33,28 +34,21 @@ class HBNBCommand(cmd.Cmd):
                 line = line + ' ' + args_list[1] + ' ' + args_list[2]
         return line
 
+    def do_quit(self, arg):
+        ''' quit command for cmd '''
+        return True
+
+    def do_EOF(self, arg):
+        ''' EOF command for cmd '''
+        print()
+        return True
+
     def emptyline(self):
-        """Ignores empty spaces"""
+        ''' Do anything with Enter '''
         pass
 
-    def do_quit(self, line):
-        """Quit command to exit the program"""
-        return True
-
-    def do_EOF(self, line):
-        """Quit command to exit the program at end of file"""
-        return True
-
-    def help_EOF(self):
-        """ Prints the help documentation for EOF """
-        print("Exits the program without formatting\n")
-
     def do_create(self, line):
-        """Creates a new instance of BaseModel, saves it
-        Exceptions:
-            SyntaxError: when there is no args given
-            NameError: when there is no object taht has the name
-        """
+        ''' Creates a new instance of BaseModel, saves it in JSON file '''
         try:
             if not line:
                 raise SyntaxError()
@@ -72,19 +66,8 @@ class HBNBCommand(cmd.Cmd):
         except NameError:
             print("** class doesn't exist **")
 
-    def help_create(self):
-        """ Help information for the create method """
-        print("Creates a class of any type")
-        print("[Usage]: create <className>\n")
-
     def do_show(self, line):
-        """Prints the string representation of an instance
-        Exceptions:
-            SyntaxError: when there is no args given
-            NameError: when there is no object taht has the name
-            IndexError: when there is no id given
-            KeyError: when there is no valid id given
-        """
+        ''' Prints the string representation of id instance '''
         args = line.split()
         print(args)
         if not args:
@@ -103,19 +86,8 @@ class HBNBCommand(cmd.Cmd):
             except KeyError:
                 print("** no instance found **")
 
-    def help_show(self):
-        """ Help information for the show command """
-        print("Shows an individual instance of a class")
-        print("[Usage]: show <className> <objectId>\n")
-
     def do_destroy(self, line):
-        """Deletes an instance based on the class name and id
-        Exceptions:
-            SyntaxError: when there is no args given
-            NameError: when there is no object taht has the name
-            IndexError: when there is no id given
-            KeyError: when there is no valid id given
-        """
+        ''' Deletes an instance based on the class name and id '''
         args = line.split()
         if not args:
             print('** class name missing **')
@@ -134,16 +106,8 @@ class HBNBCommand(cmd.Cmd):
             except KeyError:
                 print("** no instance found **")
 
-    def help_destroy(self):
-        """ Help information for the destroy command """
-        print("Destroys an individual instance of a class")
-        print("[Usage]: destroy <className> <objectId>\n")
-
     def do_all(self, arg):
-        """Prints all string representation of all instances
-        Exceptions:
-            NameError: when there is no object taht has the name
-        """
+        ''' Prints all string representation of all instances '''
         if not arg:
             my_list = [str(value) for key, value in storage.all().items()]
             if len(my_list) != 0:
@@ -157,21 +121,8 @@ class HBNBCommand(cmd.Cmd):
             if len(my_list) != 0:
                 print(my_list)
 
-    def help_all(self):
-        """ Help information for the all command """
-        print("Shows all objects, or all of a class")
-        print("[Usage]: all <className>\n")
-
     def do_update(self, line):
-        """Updates an instanceby adding or updating attribute
-        Exceptions:
-            SyntaxError: when there is no args given
-            NameError: when there is no object taht has the name
-            IndexError: when there is no id given
-            KeyError: when there is no valid id given
-            AttributeError: when there is no attribute given
-            ValueError: when there is no value given
-        """
+        ''' Update an instance based on the class name and id '''
         args = line.split()
         if len(args) == 0:
             print("** class name missing **")
@@ -206,11 +157,6 @@ class HBNBCommand(cmd.Cmd):
                     setattr(storage.all()[key], args[2].strip("\"':"), value)
                     storage.save()
 
-    def help_update(self):
-        """ Help information for the update class """
-        print("Updates an object with new information")
-        print("Usage: update <className> <id> <attName> <attVal>\n")
-
     def do_count(self, arg):
         '''Count instances of class passed as arg'''
         cnt = 0
@@ -220,9 +166,38 @@ class HBNBCommand(cmd.Cmd):
                 cnt += 1
         print(cnt)
 
+    def help_quit(self):
+        """ Prints the help documentation for quit  """
+        print("Exits the program with formatting\n")
+
+    def help_EOF(self):
+        """ Prints the help documentation for EOF """
+        print("Exits the program without formatting\n")
+
+    def help_create(self):
+        """ Help information for the create method """
+        print("Creates a class of any type")
+        print("[Usage]: create <className>\n")
+
+    def help_destroy(self):
+        """ Help information for the destroy command """
+        print("Destroys an individual instance of a class")
+        print("[Usage]: destroy <className> <objectId>\n")
+
+    def help_all(self):
+        """ Help information for the all command """
+        print("Shows all objects, or all of a class")
+        print("[Usage]: all <className>\n")
+
     def help_count(self):
         """ """
         print("Usage: count <class_name>")
 
-if __name__ == "__main__":
+    def help_update(self):
+        """ Help information for the update class """
+        print("Updates an object with new information")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
+
+
+if __name__ == '__main__':
     HBNBCommand().cmdloop()
