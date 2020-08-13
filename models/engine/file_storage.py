@@ -13,6 +13,7 @@ from models.user import User
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
+
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
     __file_path = "file.json"
@@ -51,6 +52,7 @@ class FileStorage:
                                       (**file_object[key])
         except:
             pass
+           
     def delete(self, obj=None):
         """Delete  obj from __objects if it’s inside  __"""
         if obj is None:
