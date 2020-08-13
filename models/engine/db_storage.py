@@ -71,5 +71,5 @@ class DBStorage:
         """Reload the data"""
         Base.metadata.create_all(self.__engine)
         cur_sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(cur_sess)
-        self.__session = Session
+        session2 = scoped_session(cur_sess)
+        self.__session = session2
