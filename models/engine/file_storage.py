@@ -56,7 +56,7 @@ class FileStorage:
         if obj is None:
             return
         if obj:
-            pattern = "{}.{}".format(obj.__class__.__name__, obj.id)
-            if pattern in self.__objects.keys():
+            pattern = "{}.{}".format(type(obj).__name__, obj.id)
+            if pattern in self.__objects:
                 del self.__objects[pattern]
                 self.save()
