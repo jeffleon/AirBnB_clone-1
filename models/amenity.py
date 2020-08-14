@@ -8,7 +8,7 @@ from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 import os
 
-storaga_type = os.getenv("HBNB_TYPE_STORAGE")
+storage_type = os.getenv("HBNB_TYPE_STORAGE")
 
 
 class Amenity(BaseModel, Base):
