@@ -16,7 +16,7 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
-    ''' Class for Airbnb CLI '''
+    ''' Class for Airbnb Client '''
     prompt = "(hbnb) "
 
     classes = ["BaseModel", "User", "State", "City", "Amenity", "Place",
