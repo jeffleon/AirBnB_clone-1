@@ -39,17 +39,25 @@ class DBStorage:
 
     def all(self, cls=None):
         """Query in the current database"""
+        session = self.__session
         dictionary = {}
-        for value in classes:
-            if cls is classes[value] or cls is None or cls is value:
-                objects = self.__session.query(classes[value]).all()
-                for object in objects:
-                    key = object.__class__.__name__+ "." + obj.id
-                    dictionary[key] = object
-        return dictionary
+        if (not cls):
+            hbn = classes
+        else:
+            if (type(cls) == str):
+                cls = eval(cls)
+            hbn = [cls]
+        for x in hbn:
+            sql = session.query(x)
+            for i in sql:
+                key = "{}.{}".format(type(i).__name__, i.id)
+                dictionary[key] = i
+        return (dictionary)
 
     def new(self, obj):
         """Add the object to the current database session"""
+        if not obj:
+            return
         self.__session.add(obj)
 
     def save(self):
@@ -65,5 +73,5 @@ class DBStorage:
         """Reload the data"""
         Base.metadata.create_all(self.__engine)
         cur_sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
-        Session = scoped_session(cur_sess)
-        self.__session = Session
+        session2 = scoped_session(cur_sess)
+        self.__session = session2
