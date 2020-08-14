@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Clss of the database storage
+Class of the database storage
 """
 
 import sqlalchemy
