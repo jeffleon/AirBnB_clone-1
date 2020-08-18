@@ -12,8 +12,9 @@ def do_pack():
     local("mkdir -p versions")
     time = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     file = local("tar -czvf versions/web_static_%s.tgz web_static" % time)
-    if file:
-        return "versions/web_static_{}.tgz".format(time)
+    if file.succeeded:
+        return str(os.path.join(os.getcwd(),
+                                "versions/web_static_{}.tgz".format(time)))
     else:
         return None
 
@@ -62,6 +63,7 @@ def do_deploy(archive_path):
 def deploy():
     """ start deploy """
     file = do_pack()
+    print(file)
     if file is None:
         return False
     return do_deploy(file)
