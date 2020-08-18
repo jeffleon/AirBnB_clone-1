@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 # function to generate a tar file
 """ generates a tar file """
-from fabric.api import *                                                           from datetime import datetime
+from fabric.api import *
+from datetime import datetime
 import os.path
-env.hosts = ['104.196.60.146','35.196.4.21']
+env.hosts = ['104.196.60.146','35.196.4.21'] 
 
 def do_pack():
     """ This Generate a tar of /web_static """
@@ -32,10 +33,3 @@ def do_deploy(archive_path):
         return True
     else:
         return False
-
-def deploy():
-    """ start deploy """
-    file = do_pack()
-    if file is None:
-        return False
-    return do_deploy(file)
