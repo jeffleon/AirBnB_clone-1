@@ -7,4 +7,4 @@ def do_pack():
     """ This Generate a tar of /web_static """
     local("mkdir -p versions")
     time = datetime.now().strftime("%Y%m%d%H%M%S")
-    local("tar -czvf versions/web_static_%s.tgz" % time)
+    local("tar -czvf versions/web_static_%s.tgz web_static" % time)
