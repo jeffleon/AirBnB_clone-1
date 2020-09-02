@@ -52,7 +52,7 @@ class FileStorage:
                                       (**file_object[key])
         except:
             pass
-           
+
     def delete(self, obj=None):
         """Delete  obj from __objects if it’s inside  __"""
         if obj is None:
@@ -62,3 +62,7 @@ class FileStorage:
             if pattern in self.__objects:
                 del self.__objects[pattern]
                 self.save()
+
+    def close(self):
+        """ call the reload method """
+        self.reload()
