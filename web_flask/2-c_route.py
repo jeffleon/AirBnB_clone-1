@@ -6,16 +6,19 @@ app.url_map.strict_slashes = False
 
 @app.route('/')
 def hello():
+    """" return a hello HBNB """
     return "Hello HBNB!"
 
 
 @app.route('/hbnb')
 def hbhb():
+    """" return a HBNB """
     return "HBNB"
 
 
 @app.route('/c/<text>')
 def definetext(text):
+    """ return a C with that you type"""
     text = text.replace("_"," ")
     return "C {}".format(text)
 
