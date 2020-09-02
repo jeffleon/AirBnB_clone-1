@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+"""Module for start Flask web application"""
 from flask import Flask, render_template
 
 app = Flask(__name__)
@@ -7,16 +8,19 @@ app.url_map.strict_slashes = False
 
 @app.route('/')
 def hello():
+    """" return a hello HBNB """
     return "Hello HBNB!"
 
 
 @app.route('/hbnb')
 def hbhb():
+    """" return a hello HBNB """
     return "HBNB"
 
 
 @app.route('/c/<text>')
 def definetext(text):
+    """" return a hello HBNB """
     text = text.replace('_', '')
     return "C {}".format(text)
 
@@ -24,17 +28,20 @@ def definetext(text):
 @app.route('/python')
 @app.route('/python/<text>')
 def defintectpython(text="is cool"):
+    """" return a hello HBNB """
     text = text.replace('_', ' ')
     return "Python {}".format(text)
 
 
 @app.route('/number/<int:n>')
 def itsnumber(n):
+    """" return a hello HBNB """
     return "{} is a number".format(n)
 
 
 @app.route('/number_template/<int:n>')
 def render(n):
+    """" return a hello HBNB """
     return render_template("5-number.html", number=n)
 
 
