@@ -46,22 +46,18 @@ class FileStorage:
         """Deserializes the JSON file to __objects"""
         try:
             with open(self.__file_path, "r") as f:
-                file_object = json.load(f)
-            for key, value in file_object:
-                self.__objects[key] = classes[file_object[key]["__class__"]]\
-                                      (**file_object[key])
+                fo = json.load(f)
+            for key, value in fo:
+                self.__objects[key] = classes[fo[key]["__class__"]](**fo[key])
         except:
             pass
 
     def delete(self, obj=None):
-        """Delete  obj from __objects if it’s inside  __"""
-        if obj is None:
-            return
-        if obj:
-            pattern = "{}.{}".format(type(obj).__name__, obj.id)
-            if pattern in self.__objects:
-                del self.__objects[pattern]
-                self.save()
+        """delete obj from __objects if it’s inside"""
+        if obj is not None:
+            key = obj.__class__.__name__ + '.' + obj.id
+            if key in self.__objects:
+                del self.__objects[key]
 
     def close(self):
         """ call the reload method """
