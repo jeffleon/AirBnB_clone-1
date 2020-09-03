@@ -12,8 +12,9 @@ app.url_map.strict_slashes = False
 def static_list():
     objects = storage.all(State)
     obj = list(objects.values())
-    return render_template("7-states_list.html", states=obj) 
-    
+    return render_template("7-states_list.html", states=obj)
+
+
 @app.teardown_appcontext
 def teardown_db(obj):
     storage.close()
